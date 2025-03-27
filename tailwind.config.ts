@@ -11,6 +11,8 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        'electric-blue': '#7DF9FF',
+        'hover-electric-blue': '#5EDCE0'
       },
     },
   },
