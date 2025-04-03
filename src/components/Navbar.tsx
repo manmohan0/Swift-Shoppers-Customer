@@ -1,3 +1,4 @@
+import { useAuth } from "@/context/Auth"
 import { faHeart, faUser } from "@fortawesome/free-regular-svg-icons"
 import { faCartShopping, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
@@ -5,6 +6,8 @@ import Image from "next/image"
 import Link from "next/link"
 
 export const Navbar = () => {
+    const [auth] = useAuth()
+    
     return <>
             <nav>
                 <div className="flex flex-row bg-electric-blue justify-between">
@@ -18,16 +21,16 @@ export const Navbar = () => {
                         <input type="text" placeholder="Laptop, Mobiles, etc" name="Search" id="Search" className="focus:outline-none w-[600px] rounded-md px-1"/>
                     </span>
                     <div className="flex justify-center">
-                            <span className="flex p-3 space-x-2 cursor-pointer hover:bg-hover-electric-blue">
-                                <Link href={"/login"} className="my-auto flex space-x-2">
-                                    <span>
-                                        <FontAwesomeIcon width={20} icon={faUser} />
-                                    </span>
-                                    <span>
-                                        Login
-                                    </span>
-                                </Link>
-                            </span>
+                        {!auth && <Link href={"/login"} className="flex h-full space-x-2 hover:bg-hover-electric-blue">
+                            <div className="flex p-3 my-auto space-x-2 cursor-pointer">
+                                <span>
+                                    <FontAwesomeIcon width={20} icon={faUser} />
+                                </span>
+                                <span>
+                                    Login
+                                </span>
+                            </div>
+                        </Link>}
                         <span className="flex p-3 space-x-2 cursor-pointer hover:bg-hover-electric-blue">
                             <span className="my-auto">
                                 <FontAwesomeIcon width={20} icon={faCartShopping} />
