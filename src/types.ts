@@ -1,3 +1,8 @@
+export interface getImages {
+    bucketId: string,
+    folder?: string,
+    nameIndex: number
+}
 export interface User{
     firstname: string,
     lastname: string,
