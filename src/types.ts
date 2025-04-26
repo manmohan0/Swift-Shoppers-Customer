@@ -10,12 +10,8 @@ export interface User{
     phone: string
 }
 
-export interface AuthType {
-    token: string
-    user: User | null,
-}
-
-export type AuthContextType = [{
-    token: string,
-    user: User | null
-}, React.Dispatch<React.SetStateAction<AuthType>>] | null;
+export type AuthContextType = {
+    user: User | null, 
+    setUser: React.Dispatch<React.SetStateAction<User | null>>,
+    loading: boolean
+} | null;

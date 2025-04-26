@@ -4,17 +4,16 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode"
 import Cookies from "js-cookie"
 
-export const AuthContext = createContext<AuthContextType>([{
-    token: "",
-    user: null
-}, () => { }])
+export const AuthContext = createContext<AuthContextType>({
+    user: null,
+    setUser: () => { },
+    loading: true
+})
 
 export const AuthProvider = ({ children } : { children : React.ReactNode}) => {
-    // const [auth, setAuth] = useState<AuthType>({
-    //     user: null,
-    //     token: ""
-    // })
-    const [auth, setAuth] = useState<User | null>(null)
+    
+    const [user, setUser] = useState<User | null>(null)
+    const [loading, setLoading] = useState<boolean>(true)
 
     useEffect(() => {
         async function fetchData() {
@@ -25,19 +24,15 @@ export const AuthProvider = ({ children } : { children : React.ReactNode}) => {
             const user = jwtDecode<User>(token)
             
             if (user) {
-                // setAuth({
-                //     ...auth,
-                //     user: user,
-                //     token: token
-                // })
-                setAuth(user)
+                setUser(user)
+                setLoading(false)
             }
 
         }
         fetchData()
     }, [])
 
-    return <AuthContext.Provider value={[auth, setAuth]}>
+    return <AuthContext.Provider value={{ user, setUser, loading }}>
         { children }
     </AuthContext.Provider>
 }

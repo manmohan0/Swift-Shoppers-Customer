@@ -17,7 +17,7 @@ export const Login = () => {
 
     const router = useRouter()
 
-    const [auth, setAuth] = useAuth()
+    const { setAuth } = useAuth()
 
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
