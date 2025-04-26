@@ -1,9 +1,7 @@
-// /* eslint-disable react-hooks/rules-of-hooks */
 "use client"
 import { EditableBox } from "@/components/EditableBox";
 import { EditableSection } from "@/components/EditableSection";
 import { Navbar } from "@/components/Navbar"
-// import PrimaryButton from "@/components/PrimaryButton";
 import { useAuth } from "@/context/Auth";
 import { EditableField } from "@/types";
 import { faBox, faUser, faUserTie } from "@fortawesome/free-solid-svg-icons";
@@ -39,19 +37,7 @@ export const Profile = () => {
             setEmail(user.email)
         }
     }, [user])
-
-    // const Editname = () => {
-    //     setEditName(!editName)
-    // }
-
-    // const EditEmail = () => {
-    //     setEditEmail(!editEmail)
-    // }
-
-    // const EditPhone = () => {
-    //     setEditPhone(!editPhone)
-    // }
-
+    
     const EditField = (field: EditableField) => {
         setEditingField(field)
     }
