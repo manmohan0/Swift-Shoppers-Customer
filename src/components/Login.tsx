@@ -12,12 +12,12 @@ import axios from "axios"
 import Link from "next/link"
 import PrimaryButtonDisabled from "./PrimaryButtonDisabled"
 import Cookies from "js-cookie"
-
 export const Login = () => {
+
 
     const router = useRouter()
 
-    const { setAuth } = useAuth()
+    const { setUser } = useAuth()
 
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
@@ -37,10 +37,7 @@ export const Login = () => {
             const token = Cookies.get("token")
             const user = jwtDecode<User>(token ?? "")
 
-            setAuth({
-                user: user,
-                token: result.data.token
-            })
+            setUser(user)
 
             router.push("/")
         } else if (result && !result.data.success && result.data.reason == "User does not exist") {

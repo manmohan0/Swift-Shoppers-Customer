@@ -7,12 +7,14 @@ import Link from "next/link"
 
 export const Navbar = () => {
     const { user, loading } = useAuth()
-
+    
     return <>
             <nav>
                 <div className="flex flex-row bg-electric-blue justify-between">
                     <span className="ml-10">
-                        <Image src={"/swift_shoppers_logo_transparent.png"} alt={"swift_shoppers_logo_transparent.png"} width={60} height={60} priority/>
+                        <Link href={"/"} className="flex h-full space-x-2 hover:bg-hover-electric-blue hover:cursor-pointer">
+                            <Image src={"/swift_shoppers_logo_transparent.png"} alt={"swift_shoppers_logo_transparent.png"} width={60} height={60} priority/>
+                        </Link>
                     </span>
                     <span className="flex my-auto rounded-2xl bg-white border-2 border-gray-200 h-10">
                         <span className="my-auto p-2">

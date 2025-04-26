@@ -1,24 +1,24 @@
+// /* eslint-disable react-hooks/rules-of-hooks */
 "use client"
 import { EditableBox } from "@/components/EditableBox";
+import { EditableSection } from "@/components/EditableSection";
 import { Navbar } from "@/components/Navbar"
-import PrimaryButton from "@/components/PrimaryButton";
+// import PrimaryButton from "@/components/PrimaryButton";
 import { useAuth } from "@/context/Auth";
+import { EditableField } from "@/types";
 import { faBox, faUser, faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 export const Profile = () => {
-    
-    
+
     const router = useRouter()
     const { user, loading } = useAuth()
     
-    const [editName, setEditName] = useState<boolean>(false)
-    const [editPhone, setEditPhone] = useState<boolean>(false)
-    const [editEmail, setEditEmail] = useState<boolean>(false)
+    const [editingField, setEditingField] = useState<'name' | 'email' | 'phone' | null>(null)
 
     const [firstname, setFirstName] = useState<string>("")
     const [lastname, setLastName] = useState<string>("")
@@ -40,83 +40,57 @@ export const Profile = () => {
         }
     }, [user])
 
+    // const Editname = () => {
+    //     setEditName(!editName)
+    // }
+
+    // const EditEmail = () => {
+    //     setEditEmail(!editEmail)
+    // }
+
+    // const EditPhone = () => {
+    //     setEditPhone(!editPhone)
+    // }
+
+    const EditField = (field: EditableField) => {
+        setEditingField(field)
+    }
+
+    const handleFirstNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setFirstName(e.target.value)
+    },[])
+
+    const handleLastNameChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setLastName(e.target.value)
+    },[])
+
+    const handlePhoneChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {     
+        setPhone(e.target.value)
+    },[])
+
+    const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(e.target.value)
+    },[])
+
+    const handleSave = useCallback(async () => {
+        if (!editingField) return
+
+        const payload = (editingField === 'name') ? { firstname, lastname } : (editingField === 'email') ? { email } : { phone }
+        
+        try {
+            const result = await axios.post("/api/updateAccount", payload)
+            if (result && result.data.success) {
+                toast.success(`${result.data.profileData} updated successfully`)
+                setEditingField(null)
+            }
+        } catch (error) {
+            toast.error(`Error updating ${editingField}`)
+            console.log(error)
+        }
+    },[editingField, email, firstname, lastname, phone])
+
     if (loading || !user) {
         return <div className="p-10 text-center text-xl">Loading profile...</div>;
-    }
-
-
-    const Editname = () => {
-        setEditName(!editName)
-    }
-
-    const EditEmail = () => {
-        setEditEmail(!editEmail)
-    }
-
-    const EditPhone = () => {
-        setEditPhone(!editPhone)
-    }
-
-    const handleFirstNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFirstName(e.target.value)
-    }
-
-    const handleLastNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLastName(e.target.value)
-    }
-
-    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {     
-        setPhone(e.target.value)
-    }
-
-    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value)
-    }
-
-    const handleEmailSubmit = async () => {
-        try {
-            const result = await axios.post("/api/updateAccount", {
-                email
-            })
-
-            if (result && result.data.success) {
-                toast.success("Email updated successfully")
-            }
-        } catch (error) { 
-            toast.error("Error updating email")
-            console.log(error)
-        }
-    }
-
-    const handlePhoneSubmit = async () => {
-        try {
-            const result = await axios.post("/api/updateAccount", {
-                phone
-            })
-
-            if (result && result.data.success) {
-                toast.success("Phone No updated successfully")
-            }
-        } catch (error) { 
-            toast.error("Error updating Phone No")
-            console.log(error)
-        }
-    }
-
-    const handleNameSubmit = async () => {
-        try {
-            const result = await axios.post("/api/updateAccount", {
-                firstname,
-                lastname
-            })
-
-            if (result && result.data.success) {
-                toast.success("Name updated successfully")
-            }
-        } catch (error) { 
-            toast.error("Error updating Name")
-            console.log(error)
-        }
     }
 
     return <div className="bg-gray-100">
@@ -162,36 +136,58 @@ export const Profile = () => {
                 </div>
             </div>
             <div className="bg-white p-7 w-full space-y-8 shadow">
-                <div className="space-x-4">
-                    <span className="font-bold">Personal Information</span>
-                    <span className="text-sm text-electric-blue hover:cursor-pointer" onClick={Editname}>Edit</span>
-                    <div className="flex space-x-4 mt-5">
-                        <EditableBox title="First Name" value={user.firstname} isEditing={editName} onChange={handleFirstNameChange} />
-                        <EditableBox title="Last Name" value={user.lastname} isEditing={editName} onChange={handleLastNameChange} />
-                        { editName && <PrimaryButton text={"Save"} onClick={handleNameSubmit}/> }
-                    </div>
-                </div>
-                <div>
-                    <div className="space-x-4">
-                        <span className="font-bold">Email Address</span>
-                        <span className="text-sm text-electric-blue hover:cursor-pointer" onClick={EditEmail}>Edit</span>
-                        <div className="flex space-x-4 mt-5">
-                            <EditableBox title="Email Address" value={user.email} isEditing={editEmail} onChange={handleEmailChange} />
-                            { editEmail && <PrimaryButton text={"Save"} onClick={handleEmailSubmit}/> }
+            <EditableSection 
+            title="Personal Information"
+            isEditing={editingField == "name"}
+            onEditToggle={editingField == null ? () => EditField("name") : () => EditField(null)}
+            onSave={handleSave}
+            editableContent={
+              <>
+                <EditableBox
+                  title="First Name"
+                  value={firstname}
+                  isEditing={editingField == "name"}
+                  onChange={handleFirstNameChange}
+                />
+                <EditableBox
+                  title="Last Name"
+                  value={lastname}
+                  isEditing={editingField == "name"}
+                  onChange={handleLastNameChange}
+                />
+              </>
+            }
+          />
 
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <div className="space-x-4">
-                        <span className="font-bold">Phone No</span>
-                        <span className="text-sm text-electric-blue hover:cursor-pointer" onClick={EditPhone}>Edit</span>
-                        <div className="flex space-x-4 mt-5">
-                            <EditableBox title="Phone No" value={user.phone} isEditing={editPhone} onChange={handlePhoneChange} />
-                            { editPhone && <PrimaryButton text={"Save"} onClick={handlePhoneSubmit}/> }
-                        </div>
-                    </div>
-                </div>
+          <EditableSection
+            title="Email Address"
+            isEditing={editingField == "email"}
+            onEditToggle={editingField == null ? () => EditField("email") : () => EditField(null)}
+            onSave={handleSave}
+            editableContent={
+              <EditableBox
+                title="Email Address"
+                value={email}
+                isEditing={editingField == "email"}
+                onChange={handleEmailChange}
+              />
+            }
+          />
+
+          <EditableSection
+            title="Phone No"
+            isEditing={editingField == "phone"}
+            onEditToggle={editingField == null ? () => EditField("phone") : () => EditField(null)}
+            onSave={handleSave}
+            editableContent={
+              <EditableBox
+                title="Phone No"
+                value={phone}
+                isEditing={editingField === "phone"}
+                onChange={handlePhoneChange}
+              />
+            }
+          />
             </div>
         </div>
     </div>

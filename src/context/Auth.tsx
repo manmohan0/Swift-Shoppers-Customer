@@ -18,14 +18,15 @@ export const AuthProvider = ({ children } : { children : React.ReactNode}) => {
     useEffect(() => {
         async function fetchData() {
             const token = Cookies.get("token")
-            
-            if (!token) return
+
+            setLoading(false)
+            if (!token) {
+                return
+            }
             
             const user = jwtDecode<User>(token)
-            
             if (user) {
                 setUser(user)
-                setLoading(false)
             }
 
         }

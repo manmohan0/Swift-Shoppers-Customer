@@ -14,4 +14,6 @@ export type AuthContextType = {
     user: User | null, 
     setUser: React.Dispatch<React.SetStateAction<User | null>>,
     loading: boolean
-} | null;
+};
+
+export type EditableField = 'name' | 'email' | 'phone' | null
