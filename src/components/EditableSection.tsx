@@ -1,3 +1,4 @@
+import { EditableSectionInterface } from "@/types";
 import PrimaryButton from "./PrimaryButton";
 
 export const EditableSection = ({
@@ -6,13 +7,7 @@ export const EditableSection = ({
     onEditToggle,
     editableContent,
     onSave
-  }: {
-    title: string;
-    isEditing: boolean;
-    onEditToggle: () => void;
-    editableContent: React.ReactNode;
-    onSave: () => void;
-  }) => {
+  }: EditableSectionInterface) => {
     return (
     <div className="space-y-2">
       <div className="flex space-x-4 items-center">

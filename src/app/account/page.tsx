@@ -14,14 +14,15 @@ import toast, { Toaster } from "react-hot-toast";
 export const Profile = () => {
 
     const router = useRouter()
-    const { user, loading } = useAuth()
     
     const [editingField, setEditingField] = useState<'name' | 'email' | 'phone' | null>(null)
-
+    
     const [firstname, setFirstName] = useState<string>("")
     const [lastname, setLastName] = useState<string>("")
     const [phone, setPhone] = useState<string>("")
     const [email, setEmail] = useState<string>("")
+    
+    const { user, loading, fetchData } = useAuth()
 
     useEffect(() => {
         if (!user && !loading) {
@@ -55,8 +56,8 @@ export const Profile = () => {
     },[])
 
     const handleEmailChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setEmail(e.target.value)
-    },[])
+        setEmail(e.target.value.toLowerCase())
+    },[])   
 
     const handleSave = useCallback(async () => {
         if (!editingField) return
@@ -68,12 +69,13 @@ export const Profile = () => {
             if (result && result.data.success) {
                 toast.success(`${result.data.profileData} updated successfully`)
                 setEditingField(null)
+                await fetchData()
             }
         } catch (error) {
             toast.error(`Error updating ${editingField}`)
             console.log(error)
         }
-    },[editingField, email, firstname, lastname, phone])
+    },[editingField, email, fetchData, firstname, lastname, phone])
 
     if (loading || !user) {
         return <div className="p-10 text-center text-xl">Loading profile...</div>;
@@ -125,7 +127,7 @@ export const Profile = () => {
             <EditableSection 
             title="Personal Information"
             isEditing={editingField == "name"}
-            onEditToggle={editingField == null ? () => EditField("name") : () => EditField(null)}
+            onEditToggle={() => EditField(editingField == null ? "name" : null)}
             onSave={handleSave}
             editableContent={
               <>
@@ -133,12 +135,14 @@ export const Profile = () => {
                   title="First Name"
                   value={firstname}
                   isEditing={editingField == "name"}
+                  type="text"
                   onChange={handleFirstNameChange}
                 />
                 <EditableBox
                   title="Last Name"
                   value={lastname}
                   isEditing={editingField == "name"}
+                  type="text"
                   onChange={handleLastNameChange}
                 />
               </>
@@ -148,13 +152,14 @@ export const Profile = () => {
           <EditableSection
             title="Email Address"
             isEditing={editingField == "email"}
-            onEditToggle={editingField == null ? () => EditField("email") : () => EditField(null)}
+            onEditToggle={() => EditField(editingField == null ? "email" : null)}
             onSave={handleSave}
             editableContent={
               <EditableBox
                 title="Email Address"
                 value={email}
                 isEditing={editingField == "email"}
+                type="email"
                 onChange={handleEmailChange}
               />
             }
@@ -163,13 +168,14 @@ export const Profile = () => {
           <EditableSection
             title="Phone No"
             isEditing={editingField == "phone"}
-            onEditToggle={editingField == null ? () => EditField("phone") : () => EditField(null)}
+            onEditToggle={() => EditField(editingField == null ? "phone" : null)}
             onSave={handleSave}
             editableContent={
               <EditableBox
                 title="Phone No"
                 value={phone}
                 isEditing={editingField === "phone"}
+                type="tel"
                 onChange={handlePhoneChange}
               />
             }

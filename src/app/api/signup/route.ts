@@ -30,7 +30,9 @@ export async function POST (req: NextRequest) {
                 } else if (!reason.success && reason.reason == "Wrong Format") {
                     resolve({ success: false, reason: reason.issues[0].message })
                 }
+                channel.ack(recieved_msg)
             }
+
         })
     })
         
