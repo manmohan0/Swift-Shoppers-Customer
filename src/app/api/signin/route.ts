@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import jwt from "jsonwebtoken"
-import dotenv from "dotenv"
 import axios from "axios";
-
-dotenv.config()
 
 export async function POST(req: NextRequest) {
     const msg = await req.json()
@@ -18,7 +14,7 @@ export async function POST(req: NextRequest) {
             
             if (data.success && data.reason == "") {
                 const Cookies = await cookies()
-                const token = jwt.sign(JSON.stringify(data.user), process.env.SECRET_KEY ?? "")
+                const token = data.token
                 Cookies.set("token", token)
                 resolve({ success: true, reason: "" })
             } else if (!data.success && data.reason == "Internal Server Error") {
@@ -31,5 +27,6 @@ export async function POST(req: NextRequest) {
                 resolve({ success: false, reason: "Wrong Format", issue: data.issues[0].message })
             }
         })
+        
     return NextResponse.json(response)
 }
