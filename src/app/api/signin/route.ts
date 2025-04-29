@@ -11,7 +11,9 @@ export async function POST(req: NextRequest) {
             
         const response = await new Promise(async resolve => {
             
-            const response = await axios.post("http://localhost:3001/auth/signin", msg)
+            const response = await axios.post("http://localhost:3001/auth/signin", msg, {
+                withCredentials: true,
+            })
             const data = response.data
             
             if (data.success && data.reason == "") {
@@ -24,12 +26,10 @@ export async function POST(req: NextRequest) {
             } else if (!data.success && data.reason == "User Not Found") {
                 resolve({ success: false, reason: "User does not exist" })
             } else if (!data.success && data.reason == "Incorrect Password") {
-                console.log("Incorrect Password")
                 resolve({ success: false, reason: "Incorrect Password"})
             } else if (!data.success && data.reason == "Wrong Format") {
                 resolve({ success: false, reason: "Wrong Format", issue: data.issues[0].message })
             }
-            
         })
     return NextResponse.json(response)
 }
