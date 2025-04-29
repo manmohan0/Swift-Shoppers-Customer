@@ -19,7 +19,6 @@ export const AuthProvider = ({ children } : { children : React.ReactNode}) => {
     async function fetchData() {
         const token = Cookies.get("token")
 
-        setLoading(false)
         if (!token) {
             return
         }
