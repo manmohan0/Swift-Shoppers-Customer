@@ -12,8 +12,8 @@ import axios from "axios"
 import Link from "next/link"
 import PrimaryButtonDisabled from "./PrimaryButtonDisabled"
 import Cookies from "js-cookie"
-export const Login = () => {
 
+export const Login = () => {
 
     const router = useRouter()
 
@@ -29,7 +29,7 @@ export const Login = () => {
         const result = await axios.post("/api/signin", {
             email,
             password
-        })
+        }, { withCredentials: true })
         
         if (result && result.data.success) {
             toast.success("Logged in successfully")
@@ -53,6 +53,12 @@ export const Login = () => {
         } else if (result && !result.data.success && result.data.reason == "Wrong Format") {
             setLoading(false)
             toast.error(result.data.issue)
+        } else if (result && !result.data.success && result.data.reason == "Token not found") {
+            setLoading(false)
+            toast.error("Token not found")
+        } else if (result && !result.data.success && result.data.reason == "Redis Client not connected") {
+            setLoading(false)
+            toast.error("Redis Client not connected")
         }
     }
 

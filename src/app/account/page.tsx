@@ -3,12 +3,14 @@ import { EditableBox } from "@/components/EditableBox";
 import { EditableSection } from "@/components/EditableSection";
 import { Navbar } from "@/components/Navbar"
 import { useAuth } from "@/context/Auth";
-import { EditableField } from "@/types";
+import { EditableField, User } from "@/types";
 import { faBox, faUser, faUserTie } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie"
 import toast, { Toaster } from "react-hot-toast";
 
 export const Profile = () => {
@@ -22,7 +24,7 @@ export const Profile = () => {
     const [phone, setPhone] = useState<string>("")
     const [email, setEmail] = useState<string>("")
     
-    const { user, loading, fetchData } = useAuth()
+    const { user, setUser, loading, fetchData } = useAuth()
 
     useEffect(() => {
         if (!user && !loading) {
@@ -65,9 +67,16 @@ export const Profile = () => {
         const payload = (editingField === 'name') ? { firstname, lastname } : (editingField === 'email') ? { email } : { phone }
         
         try {
-            const result = await axios.post("/api/updateAccount", payload)
+            const result = await axios.post("/api/updateAccount", payload, { withCredentials: true })
+
             if (result && result.data.success) {
                 toast.success(`${result.data.profileData} updated successfully`)
+                
+                const token = Cookies.get("token")
+                const user = jwtDecode<User>(token ?? "")
+
+                setUser(user)
+                console.log(user)
                 setEditingField(null)
                 await fetchData()
             }
