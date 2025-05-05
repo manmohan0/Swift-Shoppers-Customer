@@ -20,8 +20,7 @@ export default function Home() {
 
   useEffect(() => {
     const getImages = async () => {
-      const images = await getAllImages({ bucketId: "67d7055d0033ccad33a0", nameIndex: 2, folder: "Home.Banner" })
-      console.log(images)
+      const images = await getAllImages({ bucketId: "67d7055d0033ccad33a0", nameIndex: 2, folder: "Banner" })
       setUrls(images.imageUrls)
     }
 
@@ -31,7 +30,7 @@ export default function Home() {
   return (
     <>
       <Navbar/>
-      <div className="relative w-full mx-auto">
+      <div className="relative w-full mx-auto p-3">
         <Carousel opts={{
           align: 'start',
           loop: true,
@@ -44,7 +43,6 @@ export default function Home() {
           <CarouselContent>
             {urls.map((url, idx) => {
               return <CarouselItem key={idx}><Image src={url} alt={idx.toString()} width={1920} height={200} priority/></CarouselItem>
-              // </>
             })}
           </CarouselContent>
           <CarouselPrevious className="left-2 top-1/2 -translate-y-1/2" />

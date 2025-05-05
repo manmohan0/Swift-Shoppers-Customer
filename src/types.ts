@@ -10,12 +10,19 @@ export interface User{
     phone: string
 }
 
-export interface AuthType {
-    token: string
-    user: User | null,
+export interface EditableSectionInterface {
+    title: string;
+    isEditing: boolean;
+    onEditToggle: () => void;
+    editableContent: React.ReactNode;
+    onSave: () => void;
 }
 
-export type AuthContextType = [{
-    token: string,
-    user: User | null
-}, React.Dispatch<React.SetStateAction<AuthType>>] | null;
+export type AuthContextType = {
+    user: User | null, 
+    setUser: React.Dispatch<React.SetStateAction<User | null>>,
+    fetchData: () => Promise<void>,
+    loading: boolean
+};
+
+export type EditableField = 'name' | 'email' | 'phone' | null

@@ -17,7 +17,7 @@ export const Login = () => {
 
     const router = useRouter()
 
-    const [auth, setAuth] = useAuth()
+    const { setUser } = useAuth()
 
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
@@ -29,7 +29,7 @@ export const Login = () => {
         const result = await axios.post("/api/signin", {
             email,
             password
-        })
+        }, { withCredentials: true })
         
         if (result && result.data.success) {
             toast.success("Logged in successfully")
@@ -37,10 +37,7 @@ export const Login = () => {
             const token = Cookies.get("token")
             const user = jwtDecode<User>(token ?? "")
 
-            setAuth({
-                user: user,
-                token: result.data.token
-            })
+            setUser(user)
 
             router.push("/")
         } else if (result && !result.data.success && result.data.reason == "User does not exist") {
@@ -56,6 +53,12 @@ export const Login = () => {
         } else if (result && !result.data.success && result.data.reason == "Wrong Format") {
             setLoading(false)
             toast.error(result.data.issue)
+        } else if (result && !result.data.success && result.data.reason == "Token not found") {
+            setLoading(false)
+            toast.error("Token not found")
+        } else if (result && !result.data.success && result.data.reason == "Redis Client not connected") {
+            setLoading(false)
+            toast.error("Redis Client not connected")
         }
     }
 

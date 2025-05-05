@@ -1,12 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtVerify } from "jose"
+// import { connectRedis } from "./clients/redis";
 
 export default async function middleware(req: NextRequest) {
-    const token = req.cookies.get('token')?.value
+    // const redisClient = await connectRedis()
+    // console.log(redisClient)
+    // if (!redisClient) {
+        // console.error("Redis client not connected")
+        // return NextResponse.redirect(new URL('/login', req.url))   
+    // }    
+
+    // const token = await redisClient.get("token")
+    const token = req.cookies.get("token")?.value
     const { pathname } = req.nextUrl
 
-    const Auth_Optional_Routes = ["/"]
-    const Auth_Required_Routes = []
+    const Auth_Optional_Routes: string[] = ["/"]
+    const Auth_Required_Routes: string[] = ["/account"]
 
     const isOptionalRoute = Auth_Optional_Routes.some(route => pathname.startsWith(route))    
     const isRequiredRoute = Auth_Required_Routes.some(route => pathname.startsWith(route))
