@@ -24,8 +24,11 @@ export const AuthProvider = ({ children } : { children : React.ReactNode}) => {
         }
         
         const user = jwtDecode<User>(token)
-        if (user) {
+        console.log(user.role)
+        if (user && user.role == 'Customer') {
             setUser(user)
+        } else {
+            return
         }
     }
 

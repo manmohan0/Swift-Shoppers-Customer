@@ -7,7 +7,8 @@ export interface User{
     firstname: string,
     lastname: string,
     email: string,
-    phone: string
+    phone: string,
+    role: string | null
 }
 
 export interface EditableSectionInterface {

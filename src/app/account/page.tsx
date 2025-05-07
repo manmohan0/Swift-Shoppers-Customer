@@ -84,7 +84,7 @@ export const Profile = () => {
             toast.error(`Error updating ${editingField}`)
             console.log(error)
         }
-    },[editingField, email, fetchData, firstname, lastname, phone])
+    },[editingField, email, fetchData, firstname, lastname, phone, setUser])
 
     if (loading || !user) {
         return <div className="p-10 text-center text-xl">Loading profile...</div>;

@@ -8,15 +8,17 @@ export async function POST(req: NextRequest) {
             
         const response = await new Promise(async resolve => {
             
-            const response = await axios.post("http://localhost:3001/auth/signin", msg, {
+            const response = await axios.post("http://localhost:3002/auth/signin", msg, {
                 withCredentials: true,
             })
+
             const data = response.data
-            console.log(data)
+            
             if (data.success && data.reason == "") {
                 const Cookies = await cookies()
                 const redisClient = await connectRedis()
 
+                if (data.role == "Merchant") return resolve({ success: false, reason: "You are not authorized to access this page" })
                 if (!redisClient) return resolve({ success: false, reason: "Redis Client not connected" })
 
                 const token = await redisClient.get("token")

@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     const response = await new Promise(async resolve => {
 
-        const response = await axios.post("http://localhost:3001/user/updateAccount", { newDetails, user }, {
+        const response = await axios.post("http://localhost:3002/user/updateAccount", { newDetails, user }, {
             withCredentials: true,
         })
         const data = response.data

@@ -1,4 +1,4 @@
-import { Login } from "@/components/Login"
+import { Login } from "@/components/pages/Login"
 
 export default function Home () {
     return <div> 

@@ -7,7 +7,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import toast, { Toaster } from "react-hot-toast"
-import PrimaryButtonDisabled from "./PrimaryButtonDisabled"
+import PrimaryButtonDisabled from "../PrimaryButtonDisabled"
 
 export const SignUp = () => {
 

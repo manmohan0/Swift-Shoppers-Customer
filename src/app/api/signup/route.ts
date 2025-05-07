@@ -5,7 +5,7 @@ export async function POST(req: NextRequest) {
     const msg = await req.json()
     
     const response = await new Promise(async resolve => {
-        const response = await axios.post("http://localhost:3001/auth/signup", msg, {
+        const response = await axios.post("http://localhost:3002/auth/signup", msg, {
             withCredentials: true,
         })
         const data = response.data

@@ -6,11 +6,11 @@ import { useAuth } from "@/context/Auth"
 import { jwtDecode } from "jwt-decode"
 import { User } from "@/types"
 import toast, { Toaster } from "react-hot-toast"
-import InputBox from "./InputBox"
-import PrimaryButton from "./PrimaryButton"
+import InputBox from "../InputBox"
+import PrimaryButton from "../PrimaryButton"
 import axios from "axios"
 import Link from "next/link"
-import PrimaryButtonDisabled from "./PrimaryButtonDisabled"
+import PrimaryButtonDisabled from "../PrimaryButtonDisabled"
 import Cookies from "js-cookie"
 
 export const Login = () => {
@@ -59,6 +59,9 @@ export const Login = () => {
         } else if (result && !result.data.success && result.data.reason == "Redis Client not connected") {
             setLoading(false)
             toast.error("Redis Client not connected")
+        } else if (result && !result.data.success && result.data.reason == "You are not authorized to access this page") {
+            setLoading(false)
+            toast.error("You are not authorized to access this page")
         }
     }
 
@@ -76,8 +79,7 @@ export const Login = () => {
             <div className="flex flex-col justify-center align-middle space-y-2 p-2 rounded-md shadow-md border border-electric-blue">
                 <InputBox label="Email" type="text" placeholder="abc@xyz.com" onInput={handleEmailInput}/>
                 <InputBox label="Password" type="password" placeholder="Password" onInput={handlePasswordInput}/>
-                {!loading && <PrimaryButton text={"Submit"} onClick={handleSubmit}/>}
-                {loading && <PrimaryButtonDisabled text={"Submit"}/>}
+                {loading ? <PrimaryButtonDisabled text={"Submit"}/> : <PrimaryButton text={"Submit"} onClick={handleSubmit}/>}
                 <span>Dont have an Account? <Link href={"/signup"}>Sign Up</Link></span>
             </div>
         </div>
