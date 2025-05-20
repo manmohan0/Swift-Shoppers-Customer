@@ -4,9 +4,32 @@ import { faCartShopping, faMagnifyingGlass } from "@fortawesome/free-solid-svg-i
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import Image from "next/image"
 import Link from "next/link"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+
 
 export const Navbar = () => {
-    const { user, loading } = useAuth()
+
+    const [dropDownValue] = useState([
+        {
+            label: "Account",
+            href: "/account"
+        }
+    ]);
+    
+    const { user, loading, logout } = useAuth()
+    const router = useRouter()
+    
+    const handleLogout = async () => {
+        await logout();
+    }
     
     return <>
             <nav>
@@ -23,16 +46,27 @@ export const Navbar = () => {
                         <input type="text" placeholder="Laptop, Mobiles, etc" name="Search" id="Search" className="focus:outline-none w-[600px] rounded-md px-1"/>
                     </span>
                     <div className="flex justify-center">
-                        {user && !loading ? <Link href={"/account"} className="flex h-full space-x-2 hover:bg-hover-electric-blue">
-                            <div className="flex p-3 my-auto space-x-2 cursor-pointer">
-                                <span>
-                                    <FontAwesomeIcon icon={faUser} />
-                                </span>
-                                <span>
-                                    {user.firstname}
-                                </span>
-                            </div>
-                        </Link> : <Link href={"/login"} className="flex h-full space-x-2 hover:bg-hover-electric-blue">
+                        {user && !loading ? <div className="flex my-auto space-x-2 h-full">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger className="p-3 space-x-2 h-full cursor-pointer hover:bg-hover-electric-blue">
+                                        <span>
+                                            <FontAwesomeIcon icon={faUser} />
+                                        </span>
+                                        <span>
+                                            {user.firstname}
+                                        </span>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent>
+                                        {dropDownValue.map((item, index) => (
+                                            <DropdownMenuItem key={index} onClick={() => router.push(item.href)}>
+                                                {item.label}
+                                            </DropdownMenuItem>
+                                        ))}
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div> : <Link href={"/signin"} className="flex h-full space-x-2 hover:bg-hover-electric-blue">
                             <div className="flex p-3 my-auto space-x-2 cursor-pointer">
                                 <span>
                                     <FontAwesomeIcon width={20} icon={faUser} />
@@ -42,13 +76,6 @@ export const Navbar = () => {
                                 </span>
                             </div>
                         </Link>}
-                        {/* {auth && auth.firstname && <Link href={"/account"} className="flex h-full space-x-2 hover:bg-hover-electric-blue">
-                            <div className="flex p-3 my-auto space-x-2 cursor-pointer">
-                                <span>
-                                    {auth.firstname}
-                                </span>
-                            </div>
-                        </Link>} */}
                         <span className="flex p-3 space-x-2 cursor-pointer hover:bg-hover-electric-blue">
                             <span className="my-auto">
                                 <FontAwesomeIcon width={20} icon={faCartShopping} />

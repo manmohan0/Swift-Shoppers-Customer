@@ -3,32 +3,69 @@ import { AuthContextType, User } from "@/types";
 import { createContext, useContext, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode"
 import Cookies from "js-cookie"
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export const AuthContext = createContext<AuthContextType>({
     user: null,
     setUser: () => { },
     fetchData: async () => { },
-    loading: true
+    loading: true,
+    logout: async () => { }
 })
 
 export const AuthProvider = ({ children } : { children : React.ReactNode}) => {
     
     const [user, setUser] = useState<User | null>(null)
     const [loading, setLoading] = useState<boolean>(true)
+    const router = useRouter()
 
     async function fetchData() {
-        const token = Cookies.get("token")
+        let token = Cookies.get("token")
         console.log(token)
         if (!token) {
-            return
+            try {
+                const res = await axios.get("http://localhost:3002/auth/trylogin")
+                const data = res.data
+                console.log(data)
+                if (data.success && data.reason == "") {
+                    Cookies.set("token", data.token, { expires: 1 })
+                    token = data.token
+                } else if (!data.success && data.reason == "Token Expired") {
+                    Cookies.remove("token")
+                    setUser(null)
+                    router.push("/signin")
+                    return
+                } else if (!data.success && data.reason == "Token Not Found") {
+                    setUser(null)
+                    return
+                }
+            } catch (e) {
+                console.log(e)
+                return
+            }
         }
+
+        const user = jwtDecode<User>(token ?? "")
         
-        const user = jwtDecode<User>(token)
-        console.log(user.role)
         if (user && user.role == 'Customer') {
             setUser(user)
         } else {
+            setUser(null)
             return
+        }
+    }
+
+    
+    async function logout() {
+        const res = await axios.get("http://localhost:3002/auth/logout")
+        const data = res.data
+        if (data.success && data.reason == "") {
+            Cookies.remove("token")
+            setUser(null)
+            router.push("/signin")
+        } else {
+            console.log("Logout failed")
         }
     }
 
@@ -40,7 +77,7 @@ export const AuthProvider = ({ children } : { children : React.ReactNode}) => {
         })()
     }, [])
 
-    return <AuthContext.Provider value={{ user, setUser, loading, fetchData }}>
+    return <AuthContext.Provider value={{ user, setUser, loading, fetchData, logout }}>
         { children }
     </AuthContext.Provider>
 }

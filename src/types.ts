@@ -23,7 +23,8 @@ export type AuthContextType = {
     user: User | null, 
     setUser: React.Dispatch<React.SetStateAction<User | null>>,
     fetchData: () => Promise<void>,
-    loading: boolean
+    loading: boolean,
+    logout: () => Promise<void>
 };
 
 export type EditableField = 'name' | 'email' | 'phone' | null

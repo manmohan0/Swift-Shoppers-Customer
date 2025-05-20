@@ -78,7 +78,7 @@ export const SignUp = () => {
                 <InputBox label="Confirm Password" type="password" placeholder="Confirm Password" onInput={handleConfirmPasswordInput}/>
                 {!loading && <PrimaryButton text={"Submit"} onClick={handleSubmit}/>}
                 {loading && <PrimaryButtonDisabled text={"Submit"}/>}
-                <span>Already have an Account? <Link href={"/login"}>Login</Link></span>
+                <span>Already have an Account? <Link href={"/signin"}>Login</Link></span>
             </div>
         </div>
     </>
